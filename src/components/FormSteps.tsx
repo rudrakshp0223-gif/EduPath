@@ -65,7 +65,7 @@ export function FormSteps({ onComplete }: FormStepsProps) {
           type="text"
           autoFocus
           placeholder="e.g. Math, Physics, Computer Science"
-          className="w-full text-2xl bg-transparent border-b-2 border-gray-200 focus:border-black outline-none py-4 transition-colors placeholder:text-gray-300"
+          className="w-full text-2xl bg-transparent border-b-2 border-border focus:border-card-foreground outline-none py-4 transition-colors placeholder:text-foreground/50 text-card-foreground"
           value={formData.topSubjects}
           onChange={e => setFormData({ ...formData, topSubjects: e.target.value })}
           onKeyDown={e => e.key === 'Enter' && formData.topSubjects && nextStep()}
@@ -81,7 +81,7 @@ export function FormSteps({ onComplete }: FormStepsProps) {
           type="text"
           autoFocus
           placeholder="e.g. History, Art, Coding"
-          className="w-full text-2xl bg-transparent border-b-2 border-gray-200 focus:border-black outline-none py-4 transition-colors placeholder:text-gray-300"
+          className="w-full text-2xl bg-transparent border-b-2 border-border focus:border-card-foreground outline-none py-4 transition-colors placeholder:text-foreground/50 text-card-foreground"
           value={formData.passionSubject}
           onChange={e => setFormData({ ...formData, passionSubject: e.target.value })}
           onKeyDown={e => e.key === 'Enter' && formData.passionSubject && nextStep()}
@@ -106,8 +106,8 @@ export function FormSteps({ onComplete }: FormStepsProps) {
                 className={cn(
                   "text-left p-6 rounded-2xl border-2 transition-all duration-200 text-xl font-medium",
                   formData.workPreference === val 
-                    ? "border-black bg-black text-white" 
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800"
+                    ? "border-primary bg-primary text-primary-foreground" 
+                    : "border-border hover:border-border/80 hover:bg-card/50 text-foreground"
                 )}
               >
                 {opt}
@@ -127,18 +127,18 @@ export function FormSteps({ onComplete }: FormStepsProps) {
             type="text"
             autoFocus
             placeholder="e.g. Austin, TX"
-            className="w-full text-2xl bg-transparent border-b-2 border-gray-200 focus:border-black outline-none py-4 transition-colors placeholder:text-gray-300"
+            className="w-full text-2xl bg-transparent border-b-2 border-border focus:border-card-foreground outline-none py-4 transition-colors placeholder:text-foreground/50 text-card-foreground"
             value={formData.location}
             onChange={e => setFormData({ ...formData, location: e.target.value })}
           />
           <label className="flex items-center gap-4 cursor-pointer group">
             <div className={cn(
               "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors",
-              formData.relocate ? "border-black bg-black" : "border-gray-300 group-hover:border-black"
+              formData.relocate ? "border-primary bg-primary" : "border-border group-hover:border-card-foreground"
             )}>
-              {formData.relocate && <CheckCircle2 className="w-5 h-5 text-white" />}
+              {formData.relocate && <CheckCircle2 className="w-5 h-5 text-primary-foreground" />}
             </div>
-            <span className="text-xl text-gray-800 font-medium">I am willing to relocate</span>
+            <span className="text-xl text-foreground font-medium">I am willing to relocate</span>
             <input 
               type="checkbox" 
               className="hidden" 
@@ -159,22 +159,22 @@ export function FormSteps({ onComplete }: FormStepsProps) {
             {...getRootProps()} 
             className={cn(
               "border-2 border-dashed rounded-3xl p-12 flex flex-col items-center justify-center text-center cursor-pointer transition-colors duration-200",
-              isDragActive ? "border-black bg-gray-50" : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50",
-              file && "border-green-500 bg-green-50/30"
+              isDragActive ? "border-primary bg-card" : "border-border hover:border-border hover:bg-card/50",
+              file && "border-green-500 bg-green-500/10"
             )}
           >
             <input {...getInputProps()} />
             {file ? (
               <>
-                <CheckCircle2 className="w-12 h-12 text-green-500 mb-4" />
-                <p className="text-xl font-medium text-gray-900">{file.name}</p>
-                <p className="text-sm text-gray-500 mt-2">File ready for analysis</p>
+                <CheckCircle2 className="w-12 h-12 text-green-400 mb-4" />
+                <p className="text-xl font-medium text-card-foreground">{file.name}</p>
+                <p className="text-sm text-foreground/80 mt-2">File ready for analysis</p>
               </>
             ) : (
               <>
-                <UploadCloud className="w-12 h-12 text-gray-400 mb-4" />
-                <p className="text-xl font-medium text-gray-900">Drag & drop your file here</p>
-                <p className="text-sm text-gray-500 mt-2">Supported: PDF, JPG, PNG up to 10MB</p>
+                <UploadCloud className="w-12 h-12 text-foreground/50 mb-4" />
+                <p className="text-xl font-medium text-card-foreground">Drag & drop your file here</p>
+                <p className="text-sm text-foreground/80 mt-2">Supported: PDF, JPG, PNG up to 10MB</p>
               </>
             )}
           </div>
@@ -195,7 +195,7 @@ export function FormSteps({ onComplete }: FormStepsProps) {
             key={i} 
             className={cn(
               "h-1.5 flex-1 rounded-full transition-colors duration-500",
-              i <= step ? "bg-black" : "bg-gray-200"
+              i <= step ? "bg-card-foreground" : "bg-card"
             )} 
           />
         ))}
@@ -209,10 +209,10 @@ export function FormSteps({ onComplete }: FormStepsProps) {
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4">
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-card-foreground mb-4">
             {currentStep.title}
           </h2>
-          <p className="text-lg text-gray-500 mb-12">
+          <p className="text-lg text-foreground/80 mb-12">
             {currentStep.description}
           </p>
 
@@ -226,7 +226,7 @@ export function FormSteps({ onComplete }: FormStepsProps) {
           disabled={step === 0}
           className={cn(
             "text-lg font-medium transition-opacity",
-            step === 0 ? "opacity-0 pointer-events-none" : "opacity-100 hover:text-gray-600"
+            step === 0 ? "opacity-0 pointer-events-none" : "opacity-100 hover:text-foreground/80"
           )}
         >
           Back
@@ -236,8 +236,8 @@ export function FormSteps({ onComplete }: FormStepsProps) {
           onClick={step === steps.length - 1 ? handleComplete : nextStep}
           disabled={!currentStep.isValid && step !== steps.length - 1} // Let them skip last step
           className={cn(
-            "flex items-center gap-2 bg-black text-white px-8 py-4 rounded-full text-lg font-medium transition-all",
-            (!currentStep.isValid && step !== steps.length - 1) ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800 hover:scale-105 active:scale-95"
+            "flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-lg font-medium transition-all",
+            (!currentStep.isValid && step !== steps.length - 1) ? "opacity-50 cursor-not-allowed" : "hover:bg-primary/80 hover:scale-105 active:scale-95"
           )}
         >
           {step === steps.length - 1 ? (file ? "Analyze Profile" : "Skip & Analyze") : "Continue"}

@@ -27,8 +27,9 @@ async function startServer() {
   app.post("/api/analyze", async (req, res) => {
     try {
       const { formData, fileContent, fileMimeType } = req.body;
+      // Explicit model
+      const model = "gemini-2.5-flash"; // A faster, standard model
       const aiClient = getAI();
-      const model = "gemini-3.1-pro-preview";
       
       const prompt = `You are an expert career counselor. Analyze the student's data and recommend the best career path.
         
@@ -39,7 +40,10 @@ async function startServer() {
         - Location: ${formData?.location}
         - Willing to relocate: ${formData?.relocate ? 'Yes' : 'No'}
         
-        ${fileContent ? "Also consider the attached marksheet data." : ""}
+        ${fileContent ? "Also consider the attached marksheet data." : "No marksheet was provided, so provide a generalized recommendation based on their explicit answers."}
+
+        CRITICAL SAFETY DIRECTIVE: Check the form data for inappropriate, offensive, or troll input.
+        If it is inappropriate/offensive, you must return "Inappropriate Input" for the targetCareer.title, and fill the rest with generic empty strings or defaults.
       `;
 
       const parts: any[] = [{ text: prompt }];

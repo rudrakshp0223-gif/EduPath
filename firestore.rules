@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Validation Helpers ---
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'createdAt']) && 
+             data.keys().size() == 2 && 
+             data.email is string && data.email.size() <= 100 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidAnalysisCreate(data) {
+      return data.keys().hasAll(['userId', 'status', 'createdAt', 'updatedAt']) && 
+             data.userId == request.auth.uid &&
+             data.status is string && data.status.size() <= 40 &&
+             data.createdAt == request.time &&
+             data.updatedAt == request.time;
+    }
+
+    function isValidAnalysisUpdate(data) {
+      return data.userId == request.auth.uid &&
+             data.status is string && data.status.size() <= 40 &&
+             data.updatedAt == request.time;
+    }
+
+    // --- Rules ---
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUser(incoming());
+      allow update: if isSignedIn() && request.auth.uid == userId && 
+                       incoming().diff(existing()).affectedKeys().hasOnly(['email']) &&
+                       incoming().email is string && incoming().email.size() <= 100;
+      allow delete: if false;
+    }
+
+    match /analyses/{analysisId} {
+      allow read: if isSignedIn() && isValidId(analysisId) && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(analysisId) && 
+                       isValidAnalysisCreate(incoming()) && 
+                       exists(/databases/$(database)/documents/users/$(incoming().userId));
+      allow update: if isSignedIn() && isValidId(analysisId) && 
+                       existing().userId == request.auth.uid && 
+                       isValidAnalysisUpdate(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       (
+                         incoming().diff(existing()).affectedKeys().hasOnly(['status', 'targetCareer', 'programs', 'institutes', 'roadmap', 'marketInsights', 'updatedAt'])
+                       );
+      allow delete: if isSignedIn() && isValidId(analysisId) && existing().userId == request.auth.uid;
+    }
+  }
+}
